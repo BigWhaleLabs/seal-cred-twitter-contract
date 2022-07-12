@@ -32,10 +32,12 @@ describe('SealCredTwitter', () => {
 
   let accounts: SignerWithAddress[]
   let owner: SignerWithAddress
+  let user: SignerWithAddress
 
   beforeEach(async () => {
     accounts = await ethers.getSigners()
     owner = accounts[0]
+    user = accounts[1]
 
     const factory = await ethers.getContractFactory('SealCredTwitter')
     contract = await factory.deploy()
@@ -77,5 +79,35 @@ describe('SealCredTwitter', () => {
     await expect(
       contract.saveTweet(txParams.tweet, txParams.derivativeAddress)
     ).to.be.revertedWith('You do not own this derivative')
+  })
+  it('should delete tweet', async () => {
+    const txParams = {
+      tweet: 'gm',
+      derivativeAddress: derivativeContract.address,
+    }
+    await derivativeContract.mock.balanceOf.withArgs(owner.address).returns(1)
+    await contract.saveTweet(txParams.tweet, txParams.derivativeAddress)
+
+    await expect(contract.deleteTweet(0)).to.emit(contract, 'TweetDeleted')
+
+    let removedTweet = await contract.tweets(0)
+    removedTweet = {
+      tweet: removedTweet.tweet,
+      derivativeAddress: removedTweet.derivativeAddress,
+    }
+    expect(removedTweet).to.deep.eq(removedTweet)
+  })
+  it('should not delete tweet if the caller is not owner', async () => {
+    const txParams = {
+      tweet: 'gm',
+      derivativeAddress: derivativeContract.address,
+    }
+    await derivativeContract.mock.balanceOf.withArgs(owner.address).returns(1)
+    await contract.saveTweet(txParams.tweet, txParams.derivativeAddress)
+
+    const contractAsUser = contract.connect(user)
+    await expect(contractAsUser.deleteTweet(0)).to.be.revertedWith(
+      'Ownable: caller is not the owner'
+    )
   })
 })

@@ -60,12 +60,14 @@
 pragma solidity ^0.8.14;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./models/Tweet.sol";
 
-contract SealCredTwitter {
+contract SealCredTwitter is Ownable {
   Tweet[] public tweets;
 
   event TweetSaved(string tweet, address indexed derivativeAddress);
+  event TweetDeleted(uint256 index);
 
   modifier checkOwnership(address user, address derivativeAddress) {
     require(
@@ -83,5 +85,11 @@ contract SealCredTwitter {
     tweets.push(newTweet);
 
     emit TweetSaved(tweet, derivativeAddress);
+  }
+
+  function deleteTweet(uint256 index) external onlyOwner {
+    tweets[index].tweet = "0x0";
+
+    emit TweetDeleted(index);
   }
 }
