@@ -63,4 +63,5 @@ struct Tweet {
   string tweet;
   address derivativeAddress;
   uint256 tweetLength;
+  bool deleted;
 }
