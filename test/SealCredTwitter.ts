@@ -60,14 +60,19 @@ describe('SealCredTwitter', () => {
 
     await expect(contract.saveTweet(txParams.tweet, txParams.derivativeAddress))
       .to.emit(contract, 'TweetSaved')
-      .withArgs(txParams.tweet, txParams.derivativeAddress)
+      .withArgs(
+        txParams.tweet,
+        txParams.derivativeAddress,
+        txParams.tweet.length
+      )
 
     const savedTweet = await contract.tweets(0)
 
     expect({
       tweet: savedTweet.tweet,
       derivativeAddress: savedTweet.derivativeAddress,
-    }).to.deep.eq(txParams)
+      tweetLength: savedTweet.tweetLength,
+    }).to.deep.eq({ ...txParams, tweetLength: savedTweet.tweetLength })
   })
   it('should not save tweet if user does not own a derivative', async () => {
     const txParams = {
@@ -90,12 +95,8 @@ describe('SealCredTwitter', () => {
 
     await expect(contract.deleteTweet(0)).to.emit(contract, 'TweetDeleted')
 
-    let removedTweet = await contract.tweets(0)
-    removedTweet = {
-      tweet: removedTweet.tweet,
-      derivativeAddress: removedTweet.derivativeAddress,
-    }
-    expect(removedTweet).to.deep.eq(removedTweet)
+    const removedTweet = await contract.tweets(0)
+    expect(removedTweet['tweet']).to.be.eq('0x0')
   })
   it('should not delete tweet if the caller is not owner', async () => {
     const txParams = {

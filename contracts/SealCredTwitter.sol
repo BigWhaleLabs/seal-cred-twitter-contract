@@ -66,7 +66,11 @@ import "./models/Tweet.sol";
 contract SealCredTwitter is Ownable {
   Tweet[] public tweets;
 
-  event TweetSaved(string tweet, address indexed derivativeAddress);
+  event TweetSaved(
+    string tweet,
+    address indexed derivativeAddress,
+    uint256 tweetLength
+  );
   event TweetDeleted(uint256 index);
 
   modifier checkOwnership(address user, address derivativeAddress) {
@@ -81,10 +85,11 @@ contract SealCredTwitter is Ownable {
     external
     checkOwnership(msg.sender, derivativeAddress)
   {
-    Tweet memory newTweet = Tweet(tweet, derivativeAddress);
+    uint256 tweetLength = bytes(tweet).length;
+    Tweet memory newTweet = Tweet(tweet, derivativeAddress, tweetLength);
     tweets.push(newTweet);
 
-    emit TweetSaved(tweet, derivativeAddress);
+    emit TweetSaved(tweet, derivativeAddress, tweetLength);
   }
 
   function deleteTweet(uint256 index) external onlyOwner {
