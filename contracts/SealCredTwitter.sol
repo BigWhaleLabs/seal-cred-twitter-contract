@@ -66,10 +66,10 @@ import "./models/Tweet.sol";
 
 contract SealCredTwitter is Ownable {
   Tweet[] public tweets;
-  address public immutable SCEmailLedgerAddress;
+  address public immutable sealCredEmailLedgerAddress;
 
-  constructor(address _SCEmailLedgerAddress) {
-    SCEmailLedgerAddress = _SCEmailLedgerAddress;
+  constructor(address _sealCredEmailLedgerAddress) {
+    sealCredEmailLedgerAddress = _sealCredEmailLedgerAddress;
   }
 
   event TweetSaved(
@@ -80,7 +80,7 @@ contract SealCredTwitter is Ownable {
   event TweetDeleted(uint256 index);
 
   function saveTweet(string memory tweet, string memory domain) external {
-    address derivativeAddress = SCEmailDerivative(SCEmailLedgerAddress)
+    address derivativeAddress = SCEmailDerivative(sealCredEmailLedgerAddress)
       .getDerivativeContract(domain);
     require(derivativeAddress != address(0), "Derivative contract not found");
     require(
