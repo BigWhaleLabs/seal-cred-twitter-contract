@@ -1,10 +1,10 @@
 {
-  "name": "@borodutch/smart-contract-starter",
+  "name": "@big-whale-labs/seal-cred-twitter-contract",
   "version": "0.0.1",
-  "description": "A starter for Solidity smart contracts for Ethereum",
+  "description": "Contract to allow users to save tweets to the blockchain",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Borodutch/smart-contract-starter"
+    "url": "git+https://github.com/BigWhaleLabs/seal-cred-twitter-contract"
   },
   "license": "MIT",
   "np": {

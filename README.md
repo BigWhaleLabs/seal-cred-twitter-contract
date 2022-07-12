@@ -1,10 +1,10 @@
-# Solidity Ethereum smart contract starter
+# Seal Cred Twitter contract
 
-Heavily influenced by the [Big Whale Labs repos](https://github.com/BigWhaleLabs).
+Used to save tweet data on the blockchain.
 
 ## Usage
 
-1. Clone the repository with `git clone git@github.com:Borodutch/smart-contract-starter`
+1. Clone the repository with `git clone git@github.com:BigWhaleLabs/seal-cred-twitter-contract`
 2. Install the dependencies with `yarn`
 3. Add environment vareables to your `.env` file
 4. Run the scripts below

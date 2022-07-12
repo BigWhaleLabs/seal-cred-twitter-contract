@@ -32,9 +32,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@borodutch/smart-contract-starter@workspace:.":
+"@big-whale-labs/seal-cred-twitter-contract@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@borodutch/smart-contract-starter@workspace:."
+  resolution: "@big-whale-labs/seal-cred-twitter-contract@workspace:."
   dependencies:
     "@nomiclabs/hardhat-ethers": ^2.1.0
     "@nomiclabs/hardhat-etherscan": ^3.1.0
