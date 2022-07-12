@@ -59,7 +59,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.14;
 
-import "./interfaces/IDerivative.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./models/Tweet.sol";
 
 contract SealCredTwitter {
@@ -69,7 +69,7 @@ contract SealCredTwitter {
 
   modifier checkOwnership(address user, address derivativeAddress) {
     require(
-      IDerivative(derivativeAddress).balanceOf(user) > 0,
+      IERC721(derivativeAddress).balanceOf(user) > 0,
       "You do not own this derivative"
     );
     _;
