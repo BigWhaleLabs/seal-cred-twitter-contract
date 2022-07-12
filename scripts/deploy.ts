@@ -17,8 +17,8 @@ async function main() {
   } as { [chainId: number]: string }
   const chainName = chains[chainId]
 
-  const contractName = 'MyERC721'
-  const contractSymbol = 'MYERC721'
+  const contractName = 'SealCredTwitter'
+  const contractSymbol = 'SealCredTwitter'
   console.log(`Deploying ${contractName}...`)
   const Contract = await ethers.getContractFactory(contractName)
   const contract = await Contract.deploy(contractName, contractSymbol)
