@@ -59,45 +59,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.14;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "./interfaces/SCEmailDerivative.sol";
-import "./models/Tweet.sol";
-
-contract SealCredTwitter is Ownable {
-  Tweet[] public tweets;
-  address public immutable SCEmailLedgerAddress;
-
-  constructor(address _SCEmailLedgerAddress) {
-    SCEmailLedgerAddress = _SCEmailLedgerAddress;
-  }
-
-  event TweetSaved(
-    string tweet,
-    address indexed derivativeAddress,
-    uint256 tweetLength
-  );
-  event TweetDeleted(uint256 index);
-
-  function saveTweet(string memory tweet, string memory domain) external {
-    address derivativeAddress = SCEmailDerivative(SCEmailLedgerAddress)
-      .getDerivativeContract(domain);
-    require(derivativeAddress != address(0), "Derivative contract not found");
-    require(
-      IERC721(derivativeAddress).balanceOf(msg.sender) > 0,
-      "You do not own this derivative"
-    );
-
-    uint256 tweetLength = bytes(tweet).length;
-    Tweet memory newTweet = Tweet(tweet, derivativeAddress, tweetLength);
-    tweets.push(newTweet);
-
-    emit TweetSaved(tweet, derivativeAddress, tweetLength);
-  }
-
-  function deleteTweet(uint256 index) external onlyOwner {
-    tweets[index].tweet = "0x0";
-
-    emit TweetDeleted(index);
-  }
+interface SCEmailDerivative {
+  function getDerivativeContract(string memory domain)
+    external
+    view
+    returns (address);
 }
