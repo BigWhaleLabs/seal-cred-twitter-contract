@@ -72,12 +72,7 @@ contract SealCredTwitter is Ownable {
     sealCredEmailLedgerAddress = _sealCredEmailLedgerAddress;
   }
 
-  event TweetSaved(
-    string tweet,
-    address indexed derivativeAddress,
-    uint256 tweetLength,
-    bool deleted
-  );
+  event TweetSaved(string tweet, address indexed derivativeAddress);
   event TweetDeleted(uint256 index);
 
   function saveTweet(string memory tweet, string memory domain) external {
@@ -89,17 +84,9 @@ contract SealCredTwitter is Ownable {
       "You do not own this derivative"
     );
 
-    uint256 tweetLength = bytes(tweet).length;
-    Tweet memory newTweet = Tweet(tweet, derivativeAddress, tweetLength, false);
+    Tweet memory newTweet = Tweet(tweet, derivativeAddress);
     tweets.push(newTweet);
 
-    emit TweetSaved(tweet, derivativeAddress, tweetLength, false);
-  }
-
-  function deleteTweet(uint256 index) external onlyOwner {
-    tweets[index].tweet = "0x0";
-    tweets[index].deleted = true;
-
-    emit TweetDeleted(index);
+    emit TweetSaved(tweet, derivativeAddress);
   }
 }

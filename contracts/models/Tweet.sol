@@ -62,6 +62,4 @@ pragma solidity ^0.8.14;
 struct Tweet {
   string tweet;
   address derivativeAddress;
-  uint256 tweetLength;
-  bool deleted;
 }
