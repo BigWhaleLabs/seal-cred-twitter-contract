@@ -44,6 +44,7 @@ describe('SealCredTwitter', () => {
 
   describe('Contract', function () {
     it('should save tweet', async function () {
+      // Setup mocks
       await this.SCEmailLedgerContract.mock.getDerivativeContract
         .withArgs(emails[0])
         .returns(this.derivativeContract.address)
@@ -68,6 +69,7 @@ describe('SealCredTwitter', () => {
       })
     })
     it('should not save tweet is derivative does not exist', async function () {
+      // Setup mocks
       await this.SCEmailLedgerContract.mock.getDerivativeContract
         .withArgs(emails[0])
         .returns('0x0000000000000000000000000000000000000000')
@@ -80,6 +82,7 @@ describe('SealCredTwitter', () => {
       ).to.be.revertedWith('Derivative contract not found')
     })
     it('should not save tweet if user does not own a derivative', async function () {
+      // Setup mocks
       await this.SCEmailLedgerContract.mock.getDerivativeContract
         .withArgs(emails[0])
         .returns(this.derivativeContract.address)
@@ -90,6 +93,35 @@ describe('SealCredTwitter', () => {
       await expect(
         this.contract.saveTweet(this.txParams.tweet, this.txParams.domain)
       ).to.be.revertedWith('You do not own this derivative')
+    })
+    it('should return all tweets', async function () {
+      // Setup mocks
+      await this.SCEmailLedgerContract.mock.getDerivativeContract
+        .withArgs(emails[0])
+        .returns(this.derivativeContract.address)
+      await this.derivativeContract.mock.balanceOf
+        .withArgs(this.owner.address)
+        .returns(1)
+
+      const expectedTweets: { tweet: string; derivativeAddress: string }[] = []
+
+      // Saving tweets and seting expectedTweets array
+      for (let i = 0; i < 5; i++) {
+        await this.contract.saveTweet(this.txParams.tweet, this.txParams.domain)
+        expectedTweets.push({
+          tweet: this.txParams.tweet,
+          derivativeAddress: this.derivativeContract.address,
+        })
+      }
+
+      const tweets = await this.contract.getAllTweets()
+      // Serializing tweets array from contract call
+      const serializedTweets = tweets.map((tweet) => ({
+        tweet: tweet.tweet,
+        derivativeAddress: tweet.derivativeAddress,
+      }))
+
+      expect(serializedTweets).to.deep.eq(expectedTweets)
     })
   })
 })
