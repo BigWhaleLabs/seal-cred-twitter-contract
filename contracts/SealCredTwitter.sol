@@ -59,29 +59,44 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.14;
 
-import "./interfaces/IDerivative.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "./interfaces/ISCEmailLedger.sol";
 import "./models/Tweet.sol";
 
 contract SealCredTwitter {
   Tweet[] public tweets;
+  address public immutable sealCredEmailLedgerAddress;
+
+  constructor(address _sealCredEmailLedgerAddress) {
+    sealCredEmailLedgerAddress = _sealCredEmailLedgerAddress;
+  }
 
   event TweetSaved(string tweet, address indexed derivativeAddress);
 
-  modifier checkOwnership(address user, address derivativeAddress) {
+  function saveTweet(string memory tweet, string memory domain) external {
+    address derivativeAddress = ISCEmailLedger(sealCredEmailLedgerAddress)
+      .getDerivativeContract(domain);
+    require(derivativeAddress != address(0), "Derivative contract not found");
     require(
-      IDerivative(derivativeAddress).balanceOf(user) > 0,
+      IERC721(derivativeAddress).balanceOf(msg.sender) > 0,
       "You do not own this derivative"
     );
-    _;
-  }
 
-  function saveTweet(string memory tweet, address derivativeAddress)
-    external
-    checkOwnership(msg.sender, derivativeAddress)
-  {
     Tweet memory newTweet = Tweet(tweet, derivativeAddress);
     tweets.push(newTweet);
 
     emit TweetSaved(tweet, derivativeAddress);
+  }
+
+  function getAllTweets() external view returns (Tweet[] memory) {
+    uint256 tweetsLength = tweets.length;
+    Tweet[] memory allTweets = new Tweet[](tweetsLength);
+
+    for (uint256 i = 0; i < tweetsLength; i++) {
+      Tweet storage tweet = tweets[i];
+      allTweets[i] = tweet;
+    }
+
+    return allTweets;
   }
 }
