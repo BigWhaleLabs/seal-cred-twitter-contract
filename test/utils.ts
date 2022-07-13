@@ -1,6 +1,6 @@
 export const emails = ['one@example.com', 'two@example2.com']
 
-export const DERIVATIVE_ABI = [
+export const ERC721_ABI = [
   {
     inputs: [
       {

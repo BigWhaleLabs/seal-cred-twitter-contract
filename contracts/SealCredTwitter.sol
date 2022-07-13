@@ -60,7 +60,7 @@
 pragma solidity ^0.8.14;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "./interfaces/SCEmailDerivative.sol";
+import "./interfaces/ISCEmailLedger.sol";
 import "./models/Tweet.sol";
 
 contract SealCredTwitter {
@@ -74,7 +74,7 @@ contract SealCredTwitter {
   event TweetSaved(string tweet, address indexed derivativeAddress);
 
   function saveTweet(string memory tweet, string memory domain) external {
-    address derivativeAddress = SCEmailDerivative(sealCredEmailLedgerAddress)
+    address derivativeAddress = ISCEmailLedger(sealCredEmailLedgerAddress)
       .getDerivativeContract(domain);
     require(derivativeAddress != address(0), "Derivative contract not found");
     require(

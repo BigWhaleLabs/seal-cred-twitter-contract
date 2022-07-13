@@ -1,4 +1,4 @@
-import { DERIVATIVE_ABI, EMAIL_LEDGER_ABI, emails } from './utils'
+import { EMAIL_LEDGER_ABI, ERC721_ABI, emails } from './utils'
 import { ethers, waffle } from 'hardhat'
 import { expect } from 'chai'
 
@@ -25,7 +25,7 @@ describe('SealCredTwitter', () => {
 
     this.derivativeContract = await waffle.deployMockContract(
       this.owner,
-      DERIVATIVE_ABI
+      ERC721_ABI
     )
   })
 

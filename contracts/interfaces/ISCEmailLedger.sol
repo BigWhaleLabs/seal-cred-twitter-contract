@@ -59,7 +59,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.14;
 
-interface SCEmailDerivative {
+interface ISCEmailLedger {
   function getDerivativeContract(string memory domain)
     external
     view

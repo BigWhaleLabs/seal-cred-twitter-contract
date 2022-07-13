@@ -1,11 +1,11 @@
-import * as dotenv from 'dotenv'
-import { cleanEnv, str, testOnly } from 'envalid'
-import { HardhatUserConfig } from 'hardhat/config'
 import '@nomiclabs/hardhat-etherscan'
 import '@nomiclabs/hardhat-waffle'
 import '@typechain/hardhat'
 import 'hardhat-gas-reporter'
 import 'solidity-coverage'
+import * as dotenv from 'dotenv'
+import { HardhatUserConfig } from 'hardhat/config'
+import { cleanEnv, str, testOnly } from 'envalid'
 
 dotenv.config()
 
@@ -20,7 +20,7 @@ const {
       '0000000000000000000000000000000000000000000000000000000000000000'
     ),
   }),
-  ETH_RPC: str({ devDefault: testOnly('') }),
+  ETH_RPC: str(),
   ETHERSCAN_API_KEY: str({ devDefault: testOnly('') }),
   COINMARKETCAP_API_KEY: str({ devDefault: testOnly('') }),
 })
