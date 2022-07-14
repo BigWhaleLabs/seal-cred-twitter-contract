@@ -1,4 +1,9 @@
 import { ethers, run } from 'hardhat'
+import prompt from 'prompt'
+
+const regexes = {
+  ethereumAddress: /^0x[a-fA-F0-9]{40}$/,
+}
 
 async function main() {
   const [deployer] = await ethers.getSigners()
@@ -18,10 +23,19 @@ async function main() {
   const chainName = chains[chainId]
 
   const contractName = 'SealCredTwitter'
-  const contractSymbol = 'SealCredTwitter'
   console.log(`Deploying ${contractName}...`)
   const Contract = await ethers.getContractFactory(contractName)
-  const contract = await Contract.deploy(contractName, contractSymbol)
+  const { ledgerAddress } = await prompt.get({
+    properties: {
+      ledgerAddress: {
+        required: true,
+        pattern: regexes.ethereumAddress,
+        message: `Ledger address for ${contractName}`,
+        default: '0xCd990C45d0B794Bbb47Ad31Ee3567a36c0c872e0',
+      },
+    },
+  })
+  const contract = await Contract.deploy(ledgerAddress as string)
 
   console.log('Deploy tx gas price:', contract.deployTransaction.gasPrice)
   console.log('Deploy tx gas limit:', contract.deployTransaction.gasLimit)
@@ -37,7 +51,7 @@ async function main() {
   try {
     await run('verify:verify', {
       address,
-      constructorArguments: [contractName, contractSymbol],
+      constructorArguments: [ledgerAddress],
     })
   } catch (err) {
     console.log(
