@@ -44,7 +44,7 @@ __metadata:
     "@typechain/hardhat": ^6.1.2
     "@types/chai": ^4.3.1
     "@types/mocha": ^9.1.1
-    "@types/node": ^18.0.3
+    "@types/node": ^18.0.4
     "@typescript-eslint/eslint-plugin": ^5.30.6
     "@typescript-eslint/parser": ^5.30.6
     chai: ^4.3.6
@@ -61,13 +61,13 @@ __metadata:
     eslint-plugin-sort-imports-es6-autofix: ^0.6.0
     ethereum-waffle: ^3.4.4
     ethers: ^5.6.9
-    hardhat: ^2.10.0
+    hardhat: ^2.10.1
     hardhat-gas-reporter: ^1.0.8
     prettier: ^2.7.1
     prettier-plugin-solidity: ^1.0.0-dev.22
     solhint: ^3.3.7
     solidity-coverage: ^0.7.21
-    ts-node: ^10.8.2
+    ts-node: ^10.9.0
     typechain: ^8.1.0
     typescript: ^4.7.4
   languageName: unknown
@@ -1735,10 +1735,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.0.3":
-  version: 18.0.3
-  resolution: "@types/node@npm:18.0.3"
-  checksum: 5dec59fbbc1186c808b53df1ca717dad034dbd6a901c75f5b052c845618b531b05f27217122c6254db99529a68618e4cfc534ae3dbf4e88754e9e572df80defa
+"@types/node@npm:^18.0.4":
+  version: 18.0.4
+  resolution: "@types/node@npm:18.0.4"
+  checksum: 981284fd57941f233f0e77038087c122f56e3c2b4fc4e090dfc7f0a93abfc526d5ccdd59eb3ef551d713245cf3943e37c7b957f12ba699209341a447c39fab59
   languageName: node
   linkType: hard
 
@@ -7271,9 +7271,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hardhat@npm:^2.10.0":
-  version: 2.10.0
-  resolution: "hardhat@npm:2.10.0"
+"hardhat@npm:^2.10.1":
+  version: 2.10.1
+  resolution: "hardhat@npm:2.10.1"
   dependencies:
     "@ethereumjs/block": ^3.6.2
     "@ethereumjs/blockchain": ^5.5.2
@@ -7333,7 +7333,7 @@ __metadata:
       optional: true
   bin:
     hardhat: internal/cli/cli.js
-  checksum: 5e5a006fb7e0fdf3554aec07399cbc676d789c4335b916b76db6ec5b5c355db5984572e0e17fd5120dcf1f79011b10b414d9b8718bcd213139835807c2588a23
+  checksum: ca9060a25fc620f7be412eb49496603dbb311e2eff0a5d689aa632ff7947aa433009fe4155250acb81daaa6557fb075602174e8313460659891233768881f368
   languageName: node
   linkType: hard
 
@@ -12975,9 +12975,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.8.2":
-  version: 10.8.2
-  resolution: "ts-node@npm:10.8.2"
+"ts-node@npm:^10.9.0":
+  version: 10.9.0
+  resolution: "ts-node@npm:10.9.0"
   dependencies:
     "@cspotcode/source-map-support": ^0.8.0
     "@tsconfig/node10": ^1.0.7
@@ -13009,7 +13009,7 @@ __metadata:
     ts-node-script: dist/bin-script.js
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
-  checksum: 1eede939beed9f4db35bcc88d78ef803815b99dcdbed1ecac728d861d74dc694918a7f0f437aa08d026193743a31e7e00e2ee34f875f909b5879981c1808e2a7
+  checksum: 2d75769e595a2ee1b7382c0d9a1cd5fbff14245b3022c3701f52146e148d91c495d71f0e2ba810e92482a36b88efb5e8c487d1fbeeb7fa75dd509c1e98894029
   languageName: node
   linkType: hard
 
