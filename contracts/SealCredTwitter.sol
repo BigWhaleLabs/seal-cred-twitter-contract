@@ -60,43 +60,62 @@
 pragma solidity ^0.8.14;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "./interfaces/ISCEmailLedger.sol";
 import "./models/Tweet.sol";
 
+/**
+ * @title SealCred Twitter storage
+ * @dev Allows owners of SCEmailDerivative to post tweets
+ */
 contract SealCredTwitter {
+  using Counters for Counters.Counter;
+
+  // State
   Tweet[] public tweets;
   address public immutable sealCredEmailLedgerAddress;
+  Counters.Counter public currentTweetId;
+
+  // Events
+  event TweetSaved(uint256 id, string tweet, address indexed derivativeAddress);
 
   constructor(address _sealCredEmailLedgerAddress) {
     sealCredEmailLedgerAddress = _sealCredEmailLedgerAddress;
   }
 
-  event TweetSaved(string tweet, address indexed derivativeAddress);
-
+  /**
+   * @dev Posts a new tweet given that msg.sender is an owner of a SCEmailDerivative
+   */
   function saveTweet(string memory tweet, string memory domain) external {
+    // Get the derivative
     address derivativeAddress = ISCEmailLedger(sealCredEmailLedgerAddress)
       .getDerivativeContract(domain);
+    // Check preconditions
     require(derivativeAddress != address(0), "Derivative contract not found");
     require(
       IERC721(derivativeAddress).balanceOf(msg.sender) > 0,
       "You do not own this derivative"
     );
-
-    Tweet memory newTweet = Tweet(tweet, derivativeAddress);
+    // Post the tweet
+    uint256 id = currentTweetId.current();
+    Tweet memory newTweet = Tweet(id, tweet, derivativeAddress);
     tweets.push(newTweet);
-
-    emit TweetSaved(tweet, derivativeAddress);
+    // Emit the tweet event
+    emit TweetSaved(id, tweet, derivativeAddress);
+    // Increment the current tweet id
+    currentTweetId.increment();
   }
 
+  /**
+   * @dev Returns all tweets
+   */
   function getAllTweets() external view returns (Tweet[] memory) {
     uint256 tweetsLength = tweets.length;
     Tweet[] memory allTweets = new Tweet[](tweetsLength);
-
     for (uint256 i = 0; i < tweetsLength; i++) {
       Tweet storage tweet = tweets[i];
       allTweets[i] = tweet;
     }
-
     return allTweets;
   }
 }

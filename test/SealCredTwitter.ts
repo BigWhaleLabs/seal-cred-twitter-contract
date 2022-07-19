@@ -56,7 +56,7 @@ describe('SealCredTwitter', () => {
         this.contract.saveTweet(this.txParams.tweet, this.txParams.domain)
       )
         .to.emit(this.contract, 'TweetSaved')
-        .withArgs(this.txParams.tweet, this.derivativeContract.address)
+        .withArgs(0, this.txParams.tweet, this.derivativeContract.address)
       await this.contract.saveTweet(this.txParams.tweet, this.txParams.domain)
 
       const savedTweet = await this.contract.tweets(0)
