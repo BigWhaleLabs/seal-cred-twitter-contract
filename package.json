@@ -1,6 +1,6 @@
 {
   "name": "@big-whale-labs/seal-cred-twitter-contract",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Contract to allow users to save tweets to the blockchain",
   "repository": {
     "type": "git",
