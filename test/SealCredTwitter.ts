@@ -51,12 +51,19 @@ describe('SealCredTwitter', () => {
       await this.derivativeContract.mock.balanceOf
         .withArgs(this.owner.address)
         .returns(1)
-
       await expect(
         this.contract.saveTweet(this.txParams.tweet, this.txParams.domain)
       )
         .to.emit(this.contract, 'TweetSaved')
-        .withArgs(0, this.txParams.tweet, this.derivativeContract.address)
+        .withArgs(
+          0,
+          this.txParams.tweet,
+          this.derivativeContract.address,
+          this.owner.address,
+          (
+            await ethers.provider.getBlock('latest')
+          ).timestamp
+        )
       await this.contract.saveTweet(this.txParams.tweet, this.txParams.domain)
 
       const savedTweet = await this.contract.tweets(0)

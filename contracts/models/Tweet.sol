@@ -63,4 +63,6 @@ struct Tweet {
   uint256 id;
   string tweet;
   address derivativeAddress;
+  address sender;
+  uint256 timestamp;
 }

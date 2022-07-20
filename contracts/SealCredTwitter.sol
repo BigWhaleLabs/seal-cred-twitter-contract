@@ -77,7 +77,13 @@ contract SealCredTwitter {
   Counters.Counter public currentTweetId;
 
   // Events
-  event TweetSaved(uint256 id, string tweet, address indexed derivativeAddress);
+  event TweetSaved(
+    uint256 id,
+    string tweet,
+    address indexed derivativeAddress,
+    address indexed sender,
+    uint256 timestamp
+  );
 
   constructor(address _sealCredEmailLedgerAddress) {
     sealCredEmailLedgerAddress = _sealCredEmailLedgerAddress;
@@ -98,10 +104,16 @@ contract SealCredTwitter {
     );
     // Post the tweet
     uint256 id = currentTweetId.current();
-    Tweet memory newTweet = Tweet(id, tweet, derivativeAddress);
+    Tweet memory newTweet = Tweet(
+      id,
+      tweet,
+      derivativeAddress,
+      msg.sender,
+      block.timestamp
+    );
     tweets.push(newTweet);
     // Emit the tweet event
-    emit TweetSaved(id, tweet, derivativeAddress);
+    emit TweetSaved(id, tweet, derivativeAddress, msg.sender, block.timestamp);
     // Increment the current tweet id
     currentTweetId.increment();
   }
