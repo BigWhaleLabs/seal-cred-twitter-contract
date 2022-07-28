@@ -25,7 +25,7 @@ async function main() {
   const contractName = 'SealCredTwitter'
   console.log(`Deploying ${contractName}...`)
   const Contract = await ethers.getContractFactory(contractName)
-  const { ledgerAddress } = await prompt.get({
+  const { ledgerAddress, forwarder } = await prompt.get({
     properties: {
       ledgerAddress: {
         required: true,
@@ -33,9 +33,18 @@ async function main() {
         message: `Ledger address for ${contractName}`,
         default: '0xCd990C45d0B794Bbb47Ad31Ee3567a36c0c872e0',
       },
+      forwarder: {
+        required: true,
+        pattern: regexes.ethereumAddress,
+        message: `Forwarder address for ${contractName}`,
+        default: '0xCd990C45d0B794Bbb47Ad31Ee3567a36c0c872e0',
+      },
     },
   })
-  const contract = await Contract.deploy(ledgerAddress as string)
+  const contract = await Contract.deploy(
+    ledgerAddress as string,
+    forwarder as string
+  )
 
   console.log('Deploy tx gas price:', contract.deployTransaction.gasPrice)
   console.log('Deploy tx gas limit:', contract.deployTransaction.gasLimit)
