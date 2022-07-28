@@ -76,6 +76,7 @@ contract SealCredTwitter is Ownable {
   Tweet[] public tweets;
   address public immutable sealCredEmailLedgerAddress;
   uint256 public maxTweetLength;
+  uint256 public infixLength;
   Counters.Counter public currentTweetId;
 
   // Events
@@ -87,9 +88,14 @@ contract SealCredTwitter is Ownable {
     uint256 timestamp
   );
 
-  constructor(address _sealCredEmailLedgerAddress, uint256 _maxTweetLength) {
+  constructor(
+    address _sealCredEmailLedgerAddress,
+    uint256 _maxTweetLength,
+    uint256 _infixLength
+  ) {
     sealCredEmailLedgerAddress = _sealCredEmailLedgerAddress;
     maxTweetLength = _maxTweetLength;
+    infixLength = _infixLength;
   }
 
   /**
@@ -97,6 +103,13 @@ contract SealCredTwitter is Ownable {
    */
   function setMaxTweetLength(uint256 _maxTweetLength) external onlyOwner {
     maxTweetLength = _maxTweetLength;
+  }
+
+  /**
+   * @dev Modifies infix length
+   */
+  function setInfixLength(uint256 _infixLength) external onlyOwner {
+    infixLength = _infixLength;
   }
 
   /**
@@ -113,7 +126,7 @@ contract SealCredTwitter is Ownable {
       "You do not own this derivative"
     );
     require(
-      maxTweetLength > bytes(tweet).length,
+      maxTweetLength > bytes(tweet).length + infixLength + bytes(domain).length,
       "Tweet exceeds max tweet length"
     );
     // Post the tweet

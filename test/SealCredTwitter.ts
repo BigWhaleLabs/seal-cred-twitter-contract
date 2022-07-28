@@ -13,6 +13,7 @@ describe('SealCredTwitter', () => {
       domain: emails[0],
     }
     this.maxTweetLength = 280
+    this.infixLength = 3
   })
   beforeEach(async function () {
     this.SCEmailLedgerContract = await waffle.deployMockContract(
@@ -21,7 +22,8 @@ describe('SealCredTwitter', () => {
     )
     this.contract = await this.factory.deploy(
       this.SCEmailLedgerContract.address,
-      this.maxTweetLength
+      this.maxTweetLength,
+      this.infixLength
     )
     await this.contract.connect(this.owner)
     await this.contract.deployed()
@@ -38,6 +40,7 @@ describe('SealCredTwitter', () => {
         this.SCEmailLedgerContract.address
       )
       expect(await this.contract.maxTweetLength()).to.exist
+      expect(await this.contract.infixLength()).to.exist
     })
     it('should deploy SealCredTwitter, derivative and SCEmailLedgerContract contracts', async function () {
       expect(await this.contract.address).to.exist
@@ -57,6 +60,12 @@ describe('SealCredTwitter', () => {
       this.contractWithIncorrectOwner = this.contract.connect(this.user)
       await expect(
         this.contractWithIncorrectOwner.setMaxTweetLength(281)
+      ).to.be.revertedWith('Ownable: caller is not the owner')
+    })
+    it('should not be able to call setInfixLength', async function () {
+      this.contractWithIncorrectOwner = this.contract.connect(this.user)
+      await expect(
+        this.contractWithIncorrectOwner.setInfixLength(4)
       ).to.be.revertedWith('Ownable: caller is not the owner')
     })
   })
