@@ -6,11 +6,13 @@ describe('SealCredTwitter', () => {
   before(async function () {
     this.accounts = await ethers.getSigners()
     this.owner = this.accounts[0]
+    this.user = this.accounts[1]
     this.factory = await ethers.getContractFactory('SealCredTwitter')
     this.txParams = {
       tweet: 'gm',
       domain: emails[0],
     }
+    this.maxTweetLength = 280
   })
   beforeEach(async function () {
     this.SCEmailLedgerContract = await waffle.deployMockContract(
@@ -18,7 +20,8 @@ describe('SealCredTwitter', () => {
       EMAIL_LEDGER_ABI
     )
     this.contract = await this.factory.deploy(
-      this.SCEmailLedgerContract.address
+      this.SCEmailLedgerContract.address,
+      this.maxTweetLength
     )
     await this.contract.connect(this.owner)
     await this.contract.deployed()
@@ -34,11 +37,27 @@ describe('SealCredTwitter', () => {
       expect(await this.contract.sealCredEmailLedgerAddress()).to.equal(
         this.SCEmailLedgerContract.address
       )
+      expect(await this.contract.maxTweetLength()).to.exist
     })
     it('should deploy SealCredTwitter, derivative and SCEmailLedgerContract contracts', async function () {
       expect(await this.contract.address).to.exist
       expect(await this.derivativeContract.address).to.exist
       expect(await this.SCEmailLedgerContract.address).to.exist
+    })
+  })
+
+  describe('Owner-only calls from non-owner', function () {
+    before(function () {
+      this.contractWithIncorrectOwner = this.contract.connect(this.user)
+    })
+    it('should have the correct owner', async function () {
+      expect(await this.contract.owner()).to.equal(this.owner.address)
+    })
+    it('should not be able to call setMaxTweetLength', async function () {
+      this.contractWithIncorrectOwner = this.contract.connect(this.user)
+      await expect(
+        this.contractWithIncorrectOwner.setMaxTweetLength(281)
+      ).to.be.revertedWith('Ownable: caller is not the owner')
     })
   })
 
@@ -87,6 +106,21 @@ describe('SealCredTwitter', () => {
       await expect(
         this.contract.saveTweet(this.txParams.tweet, this.txParams.domain)
       ).to.be.revertedWith('Derivative contract not found')
+    })
+    it('should not save tweet if tweet exceeds max length', async function () {
+      // Setup mocks
+      await this.SCEmailLedgerContract.mock.getDerivativeContract
+        .withArgs(emails[0])
+        .returns(this.derivativeContract.address)
+      await this.derivativeContract.mock.balanceOf
+        .withArgs(this.owner.address)
+        .returns(1)
+
+      const tweet = 'a'
+
+      await expect(
+        this.contract.saveTweet(tweet.repeat(281), this.txParams.domain)
+      ).to.be.revertedWith('Tweet exceeds max tweet length')
     })
     it('should not save tweet if user does not own a derivative', async function () {
       // Setup mocks

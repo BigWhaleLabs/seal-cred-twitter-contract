@@ -59,6 +59,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.14;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./interfaces/ISCEmailLedger.sol";
@@ -68,12 +69,13 @@ import "./models/Tweet.sol";
  * @title SealCred Twitter storage
  * @dev Allows owners of SCEmailDerivative to post tweets
  */
-contract SealCredTwitter {
+contract SealCredTwitter is Ownable {
   using Counters for Counters.Counter;
 
   // State
   Tweet[] public tweets;
   address public immutable sealCredEmailLedgerAddress;
+  uint256 public maxTweetLength;
   Counters.Counter public currentTweetId;
 
   // Events
@@ -85,8 +87,16 @@ contract SealCredTwitter {
     uint256 timestamp
   );
 
-  constructor(address _sealCredEmailLedgerAddress) {
+  constructor(address _sealCredEmailLedgerAddress, uint256 _maxTweetLength) {
     sealCredEmailLedgerAddress = _sealCredEmailLedgerAddress;
+    maxTweetLength = _maxTweetLength;
+  }
+
+  /**
+   * @dev Modifies max tweet length
+   */
+  function setMaxTweetLength(uint256 _maxTweetLength) external onlyOwner {
+    maxTweetLength = _maxTweetLength;
   }
 
   /**
@@ -101,6 +111,10 @@ contract SealCredTwitter {
     require(
       IERC721(derivativeAddress).balanceOf(msg.sender) > 0,
       "You do not own this derivative"
+    );
+    require(
+      maxTweetLength > bytes(tweet).length,
+      "Tweet exceeds max tweet length"
     );
     // Post the tweet
     uint256 id = currentTweetId.current();
