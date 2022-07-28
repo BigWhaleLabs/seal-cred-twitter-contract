@@ -61,6 +61,7 @@ pragma solidity ^0.8.14;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@opengsn/contracts/src/BaseRelayRecipient.sol";
 import "./interfaces/ISCEmailLedger.sol";
 import "./models/Tweet.sol";
 
@@ -68,13 +69,14 @@ import "./models/Tweet.sol";
  * @title SealCred Twitter storage
  * @dev Allows owners of SCEmailDerivative to post tweets
  */
-contract SealCredTwitter {
+contract SealCredTwitter is BaseRelayRecipient {
   using Counters for Counters.Counter;
 
   // State
   Tweet[] public tweets;
   address public immutable sealCredEmailLedgerAddress;
   Counters.Counter public currentTweetId;
+  string public override versionRecipient = "2.2.0";
 
   // Events
   event TweetSaved(
@@ -85,8 +87,9 @@ contract SealCredTwitter {
     uint256 timestamp
   );
 
-  constructor(address _sealCredEmailLedgerAddress) {
+  constructor(address _sealCredEmailLedgerAddress, address _forwarder) {
     sealCredEmailLedgerAddress = _sealCredEmailLedgerAddress;
+    _setTrustedForwarder(_forwarder);
   }
 
   /**
@@ -99,7 +102,7 @@ contract SealCredTwitter {
     // Check preconditions
     require(derivativeAddress != address(0), "Derivative contract not found");
     require(
-      IERC721(derivativeAddress).balanceOf(msg.sender) > 0,
+      IERC721(derivativeAddress).balanceOf(_msgSender()) > 0,
       "You do not own this derivative"
     );
     // Post the tweet
@@ -108,12 +111,18 @@ contract SealCredTwitter {
       id,
       tweet,
       derivativeAddress,
-      msg.sender,
+      _msgSender(),
       block.timestamp
     );
     tweets.push(newTweet);
     // Emit the tweet event
-    emit TweetSaved(id, tweet, derivativeAddress, msg.sender, block.timestamp);
+    emit TweetSaved(
+      id,
+      tweet,
+      derivativeAddress,
+      _msgSender(),
+      block.timestamp
+    );
     // Increment the current tweet id
     currentTweetId.increment();
   }
